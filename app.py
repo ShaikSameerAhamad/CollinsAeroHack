@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, jsonify, Response
+from flask import Flask, render_template, request, jsonify, Response, send_from_directory
 import cv2
 import numpy as np
+import os
 from cube_model import RubiksCube
 from cube_solver import RubiksCubeSolver
 from vision_detector import CubeVisionDetector
@@ -8,7 +9,7 @@ import json
 import base64
 import time
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
 # Global variables for camera and vision detector
 camera = None

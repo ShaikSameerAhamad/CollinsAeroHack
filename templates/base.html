@@ -6,6 +6,13 @@
     <title>{% block title %}Rubik's Cube Solver{% endblock %}</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        window.addEventListener('load', function() {
+            // Dispatch a custom event when the React app is mounted
+            window.dispatchEvent(new CustomEvent('reactAppMounted'));
+        });
+    </script>
     <style>
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -492,7 +499,10 @@
             {% endif %}
         {% endwith %}
         
-        {% block content %}{% endblock %}
+            <div id="react-cube-root"></div>
+    {% block content %}{% endblock %}
+</body>
+</html>
     </div>
 
     <footer class="mt-5 py-4 text-center text-white">

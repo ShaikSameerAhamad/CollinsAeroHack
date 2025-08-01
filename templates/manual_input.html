@@ -3,6 +3,22 @@
 {% block title %}Manual Input - Rubik's Cube Solver{% endblock %}
 
 {% block content %}
+<script>
+    // Wait for both DOM and React app to be ready
+    function initManualInputWhenReady() {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeManualInput);
+        } else {
+            initializeManualInput();
+        }
+    }
+
+    // Listen for the React app mount event
+    window.addEventListener('reactAppMounted', initManualInputWhenReady);
+
+    // Fallback: If the event hasn't fired after 2 seconds, try to initialize anyway
+    setTimeout(initManualInputWhenReady, 2000);
+</script>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-12">
@@ -532,7 +548,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Solve button
-    document.getElementById('solve-btn').addEventListener('click', function() {
+    const solveBtn = document.getElementById('solve-btn');
+    if (solveBtn) solveBtn.addEventListener('click', function() {
         solveCube();
     });
     
