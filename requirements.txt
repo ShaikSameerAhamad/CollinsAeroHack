@@ -1,0 +1,14 @@
+Flask
+opencv-python
+numpy
+scikit-learn
+webcolors
+Pillow
+Jinja2
+Werkzeug
+click
+itsdangerous
+MarkupSafe
+joblib
+scipy
+threadpoolctl

@@ -1,0 +1,722 @@
+/* Additional custom styles for enhanced UI */
+
+/* Cube face hover effects */
+.cube-face {
+    position: relative;
+    overflow: hidden;
+}
+
+.cube-face::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.2);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.cube-face:hover::before {
+    opacity: 1;
+}
+
+/* Enhanced color options */
+.color-option {
+    position: relative;
+    margin: 2px;
+}
+
+.color-option::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.2s ease;
+}
+
+.color-option:hover::after {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* 3D Cube Visualization */
+.cube-3d-container {
+    perspective: 1200px;
+    margin: 30px auto;
+    width: 300px;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.cube-3d {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.cube-3d-wrapper {
+    width: 180px;
+    height: 180px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 1s ease;
+    transform: rotateX(-25deg) rotateY(-45deg);
+}
+
+.cube-face-3d {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 3px;
+    border: 3px solid #333;
+    box-sizing: border-box;
+    background: #333;
+}
+
+.cube-square-3d {
+    width: 100%;
+    height: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+/* 3D Face Positions - Proper 3D positioning */
+.front-face {
+    transform: translateZ(90px);
+}
+
+.back-face {
+    transform: translateZ(-90px) rotateY(180deg);
+}
+
+.right-face {
+    transform: translateX(90px) rotateY(90deg);
+}
+
+.left-face {
+    transform: translateX(-90px) rotateY(-90deg);
+}
+
+.up-face {
+    transform: translateY(-90px) rotateX(90deg);
+}
+
+.down-face {
+    transform: translateY(90px) rotateX(-90deg);
+}
+
+/* 3D Cube Colors with better styling */
+.cube-square-3d.color-red {
+    background: linear-gradient(135deg, #ff4444, #cc0000);
+    border-color: #cc0000;
+}
+
+.cube-square-3d.color-green {
+    background: linear-gradient(135deg, #44ff44, #00cc00);
+    border-color: #00cc00;
+}
+
+.cube-square-3d.color-blue {
+    background: linear-gradient(135deg, #4444ff, #0000cc);
+    border-color: #0000cc;
+}
+
+.cube-square-3d.color-yellow {
+    background: linear-gradient(135deg, #ffff44, #cccc00);
+    border-color: #cccc00;
+}
+
+.cube-square-3d.color-orange {
+    background: linear-gradient(135deg, #ff8844, #cc6600);
+    border-color: #cc6600;
+}
+
+.cube-square-3d.color-white {
+    background: linear-gradient(135deg, #ffffff, #cccccc);
+    border-color: #cccccc;
+}
+
+/* 3D Cube Animation for moves */
+.cube-3d-wrapper.rotating {
+    transition: transform 0.8s ease-in-out;
+}
+
+/* Solution Steps Styling */
+.solution-steps {
+    margin: 20px 0;
+}
+
+.solution-steps .alert {
+    border-left: 4px solid #007bff;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+}
+
+.solution-navigation {
+    margin: 20px 0;
+}
+
+.solution-navigation .btn {
+    min-width: 120px;
+    font-weight: 600;
+}
+
+.solution-navigation .badge {
+    font-size: 1rem;
+    padding: 8px 16px;
+}
+
+/* Color string input styling */
+.color-string-input {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.color-string-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    border-color: #80bdff;
+}
+
+.color-string-input.is-valid {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.color-string-input.is-valid:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.color-string-input.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.color-string-input.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Input field container styling */
+.color-string-input-container {
+    margin-top: 8px;
+}
+
+.color-string-input-container small {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+/* Animated loading states */
+.solving-animation {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Success animations */
+.solution-found {
+    animation: bounceIn 0.6s ease-out;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.05); }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Move sequence styling */
+.move-sequence {
+    letter-spacing: 2px;
+    line-height: 1.6;
+}
+
+.move-sequence .move {
+    display: inline-block;
+    margin: 2px 4px;
+    padding: 4px 8px;
+    background: rgba(0, 123, 255, 0.1);
+    border-radius: 4px;
+    border: 1px solid rgba(0, 123, 255, 0.2);
+    transition: all 0.2s ease;
+}
+
+.move-sequence .move:hover {
+    background: rgba(0, 123, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+/* Cube grid enhancements */
+.cube-grid {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.cube-grid:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Face labels */
+.face-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+}
+
+/* Progress indicators */
+.scan-progress {
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.scan-progress .progress-bar {
+    transition: width 0.5s ease;
+    background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+}
+
+/* Button enhancements */
+.btn {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Alert enhancements */
+.alert {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .cube-face {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .cube-grid {
+        max-width: 150px;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .color-option {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .color-string-input {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .cube-3d-container {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .cube-3d-wrapper {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .cube-face-3d {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .front-face {
+        transform: translateZ(75px);
+    }
+    
+    .back-face {
+        transform: translateZ(-75px) rotateY(180deg);
+    }
+    
+    .right-face {
+        transform: translateX(75px) rotateY(90deg);
+    }
+    
+    .left-face {
+        transform: translateX(-75px) rotateY(-90deg);
+    }
+    
+    .up-face {
+        transform: translateY(-75px) rotateX(90deg);
+    }
+    
+    .down-face {
+        transform: translateY(75px) rotateX(-90deg);
+    }
+}
+
+@media (max-width: 576px) {
+    .cube-face {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .cube-grid {
+        max-width: 130px;
+        gap: 2px;
+    }
+    
+    .hero-title {
+        font-size: 1.5rem;
+    }
+    
+    .color-string-input {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.4rem;
+    }
+    
+    .cube-3d-container {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .cube-3d-wrapper {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .cube-face-3d {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .front-face {
+        transform: translateZ(60px);
+    }
+    
+    .back-face {
+        transform: translateZ(-60px) rotateY(180deg);
+    }
+    
+    .right-face {
+        transform: translateX(60px) rotateY(90deg);
+    }
+    
+    .left-face {
+        transform: translateX(-60px) rotateY(-90deg);
+    }
+    
+    .up-face {
+        transform: translateY(-60px) rotateX(90deg);
+    }
+    
+    .down-face {
+        transform: translateY(60px) rotateX(-90deg);
+    }
+}
+
+/* Accessibility improvements */
+.cube-face:focus {
+    outline: 3px solid #007bff;
+    outline-offset: 2px;
+}
+
+.color-option:focus {
+    outline: 3px solid #007bff;
+    outline-offset: 2px;
+}
+
+.color-string-input:focus {
+    outline: none;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .card {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+    
+    .face-label {
+        color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .alert {
+        color: white;
+    }
+    
+    .color-string-input {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .color-string-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+}
+
+/* Solution Interface Styling */
+.solution-3d-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.cube-3d-container-solution {
+    perspective: 1200px;
+    margin: 20px auto;
+    width: 300px;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cube-3d-solution {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.cube-3d-wrapper-solution {
+    width: 180px;
+    height: 180px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 1s ease;
+    transform: rotateX(-25deg) rotateY(-45deg);
+}
+
+.cube-face-3d-solution {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 3px;
+    border: 3px solid #333;
+    box-sizing: border-box;
+    background: #333;
+}
+
+.cube-square-3d-solution {
+    width: 100%;
+    height: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Playback Controls */
+.playback-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.progress-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.progress-section .form-range {
+    flex: 1;
+}
+
+/* Move Sequence Display */
+.move-list-section {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.move-sequence-text {
+    font-family: 'Courier New', monospace;
+    font-size: 1.2rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #495057;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    border: 2px solid #dee2e6;
+}
+
+/* Step Grid */
+.step-grid-section {
+    margin: 20px 0;
+}
+
+.step-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.step-panel {
+    background: white;
+    border: 2px solid #dee2e6;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.step-panel.active {
+    border-color: #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.step-title {
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    color: #495057;
+}
+
+/* Mini Cube */
+.mini-cube {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateX(-20deg) rotateY(-45deg);
+}
+
+.mini-face {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 1px;
+    border: 1px solid #333;
+    box-sizing: border-box;
+    background: #333;
+}
+
+.mini-square {
+    width: 100%;
+    height: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+}
+
+/* Mini cube face positions */
+.up-mini {
+    transform: translateY(-40px) rotateX(90deg);
+}
+
+.front-mini {
+    transform: translateZ(40px);
+}
+
+.right-mini {
+    transform: translateX(40px) rotateY(90deg);
+}
+
+/* Move Indicators */
+.move-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 123, 255, 0.8);
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+    z-index: 10;
+}
+
+.indicator-2x {
+    font-size: 0.7rem;
+}
+
+.indicator-arrow {
+    font-size: 1rem;
+}
+
+/* Mini cube colors */
+.mini-square.color-red {
+    background: linear-gradient(135deg, #ff4444, #cc0000);
+}
+
+.mini-square.color-green {
+    background: linear-gradient(135deg, #44ff44, #00cc00);
+}
+
+.mini-square.color-blue {
+    background: linear-gradient(135deg, #4444ff, #0000cc);
+}
+
+.mini-square.color-yellow {
+    background: linear-gradient(135deg, #ffff44, #cccc00);
+}
+
+.mini-square.color-orange {
+    background: linear-gradient(135deg, #ff8844, #cc6600);
+}
+
+.mini-square.color-white {
+    background: linear-gradient(135deg, #ffffff, #cccccc);
+}

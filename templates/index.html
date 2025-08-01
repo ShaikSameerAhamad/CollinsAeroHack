@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <h1 class="hero-title">
+            <i class="fas fa-cube"></i> Advanced Rubik's Cube Solver
+        </h1>
+        <p class="hero-subtitle">
+            Solve any 3x3 Rubik's Cube configuration in 25 moves or less using our custom algorithm
+        </p>
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-10">
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <div class="mb-4">
+                                    <i class="fas fa-keyboard fa-4x text-primary"></i>
+                                </div>
+                                <h4 class="card-title">Manual Input</h4>
+                                <p class="card-text">
+                                    Enter your cube configuration manually by selecting colors for each sticker. 
+                                    Perfect for when you have a cube in front of you and want precise control.
+                                </p>
+                                <div class="mt-4">
+                                    <h6>Features:</h6>
+                                    <ul class="list-unstyled">
+                                        <li><i class="fas fa-check text-success"></i> Interactive color picker</li>
+                                        <li><i class="fas fa-check text-success"></i> Real-time validation</li>
+                                        <li><i class="fas fa-check text-success"></i> Step-by-step solution</li>
+                                    </ul>
+                                </div>
+                                <a href="/manual_input" class="btn btn-primary btn-lg mt-3">
+                                    <i class="fas fa-keyboard"></i> Start Manual Input
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <div class="mb-4">
+                                    <i class="fas fa-camera fa-4x text-success"></i>
+                                </div>
+                                <h4 class="card-title">Computer Vision</h4>
+                                <p class="card-text">
+                                    Use your webcam to scan a real Rubik's cube! Our AI-powered vision system 
+                                    automatically detects colors and builds the cube state.
+                                </p>
+                                <div class="mt-4">
+                                    <h6>Features:</h6>
+                                    <ul class="list-unstyled">
+                                        <li><i class="fas fa-check text-success"></i> Automatic color detection</li>
+                                        <li><i class="fas fa-check text-success"></i> Real-time face scanning</li>
+                                        <li><i class="fas fa-check text-success"></i> No manual input needed</li>
+                                    </ul>
+                                </div>
+                                <a href="/vision_input" class="btn btn-success btn-lg mt-3">
+                                    <i class="fas fa-camera"></i> Start Vision Scan
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="text-center mb-4">
+                        <i class="fas fa-info-circle"></i> About Our Algorithm
+                    </h3>
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="p-4">
+                                <i class="fas fa-lightning-bolt fa-3x text-warning mb-3"></i>
+                                <h5>Lightning Fast</h5>
+                                <p>Our custom algorithm solves any cube configuration in under 25 moves, meeting the theoretical optimal limit.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="p-4">
+                                <i class="fas fa-brain fa-3x text-info mb-3"></i>
+                                <h5>Human-Like Logic</h5>
+                                <p>Uses layer-by-layer solving method similar to how humans solve cubes, making it educational and intuitive.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="p-4">
+                                <i class="fas fa-shield-alt fa-3x text-success mb-3"></i>
+                                <h5>100% Reliable</h5>
+                                <p>Validates cube legality before solving and guarantees a valid solution for any solvable configuration.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="text-center mb-4">
+                        <i class="fas fa-cogs"></i> How It Works
+                    </h4>
+                    <div class="row">
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="p-3">
+                                <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    <strong>1</strong>
+                                </div>
+                                <h6 class="mt-2">Input Cube State</h6>
+                                <small>Enter cube configuration via manual input or camera scan</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="p-3">
+                                <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    <strong>2</strong>
+                                </div>
+                                <h6 class="mt-2">Validate Configuration</h6>
+                                <small>Check if cube state is mechanically possible</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="p-3">
+                                <div class="bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    <strong>3</strong>
+                                </div>
+                                <h6 class="mt-2">Apply Algorithm</h6>
+                                <small>Run custom layer-by-layer solving algorithm</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="p-3">
+                                <div class="bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    <strong>4</strong>
+                                </div>
+                                <h6 class="mt-2">Get Solution</h6>
+                                <small>Receive step-by-step move sequence</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4 mb-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h4 class="mb-3">
+                        <i class="fas fa-graduation-cap"></i> Educational & Fun
+                    </h4>
+                    <p class="mb-4">
+                        Perfect for cube enthusiasts, students learning algorithms, and anyone curious about 
+                        computational problem-solving. Our solver not only finds the solution but shows you 
+                        every step of the process.
+                    </p>
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <a href="/manual_input" class="btn btn-primary btn-lg me-3 mb-2">
+                                <i class="fas fa-play"></i> Try Manual Input
+                            </a>
+                            <a href="/vision_input" class="btn btn-success btn-lg mb-2">
+                                <i class="fas fa-camera"></i> Try Vision Scan
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

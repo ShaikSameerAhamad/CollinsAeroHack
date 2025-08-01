@@ -1,0 +1,510 @@
+{% extends "base.html" %}
+
+{% block title %}Vision Input - Rubik's Cube Solver{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="text-center mb-4">
+                <h2 class="text-white">
+                    <i class="fas fa-camera"></i> Computer Vision Cube Scanner
+                </h2>
+                <p class="text-white-50">Show each face of your cube to the camera one by one</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Camera Feed -->
+                    <div class="video-container mb-4">
+                        <video id="video-feed" width="640" height="480" autoplay style="width: 100%; max-width: 640px; border-radius: 10px; display: none;"></video>
+                        <canvas id="video-canvas" width="640" height="480" style="width: 100%; max-width: 640px; border-radius: 10px; display: none;"></canvas>
+                        <div id="camera-placeholder" class="text-center p-5" style="background: #f8f9fa; border-radius: 10px; min-height: 300px; display: flex; align-items: center; justify-content: center;">
+                            <div>
+                                <i class="fas fa-camera fa-4x text-muted mb-3"></i>
+                                <h5 class="text-muted">Camera Not Started</h5>
+                                <p class="text-muted">Click "Start Camera" to begin scanning</p>
+                            </div>
+                        </div>
+                        <div class="face-indicator" id="face-indicator" style="display: none;">
+                            Show <span id="current-face">Front</span> Face
+                        </div>
+                    </div>
+                    
+                    <!-- Face Selection and Progress -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-center mb-3">Scanning Progress</h5>
+                            <div class="face-buttons d-flex justify-content-center flex-wrap gap-2">
+                                <button class="btn btn-outline-primary face-btn" data-face="front">
+                                    <i class="fas fa-square"></i> Front
+                                </button>
+                                <button class="btn btn-outline-primary face-btn" data-face="back">
+                                    <i class="fas fa-square"></i> Back
+                                </button>
+                                <button class="btn btn-outline-primary face-btn" data-face="left">
+                                    <i class="fas fa-square"></i> Left
+                                </button>
+                                <button class="btn btn-outline-primary face-btn" data-face="right">
+                                    <i class="fas fa-square"></i> Right
+                                </button>
+                                <button class="btn btn-outline-primary face-btn" data-face="up">
+                                    <i class="fas fa-square"></i> Up
+                                </button>
+                                <button class="btn btn-outline-primary face-btn" data-face="down">
+                                    <i class="fas fa-square"></i> Down
+                                </button>
+                            </div>
+                            <div class="progress mt-3">
+                                <div class="progress-bar" id="scan-progress" role="progressbar" style="width: 0%"></div>
+                            </div>
+                            <p class="text-center mt-2 text-muted">
+                                <span id="faces-scanned">0</span> of 6 faces scanned
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Controls -->
+                    <div class="row mb-4">
+                        <div class="col-12 text-center">
+                            <button id="start-camera-btn" class="btn btn-success btn-lg me-2">
+                                <i class="fas fa-play"></i> Start Camera
+                            </button>
+                            <button id="capture-face-btn" class="btn btn-primary btn-lg me-2" style="display: none;">
+                                <i class="fas fa-camera"></i> Capture Face
+                            </button>
+                            <button id="solve-vision-btn" class="btn btn-warning btn-lg" style="display: none;">
+                                <i class="fas fa-magic"></i> Solve Cube
+                            </button>
+                            <button id="stop-camera-btn" class="btn btn-danger me-2" style="display: none;">
+                                <i class="fas fa-stop"></i> Stop Camera
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Detected Colors Preview -->
+                    <div id="color-preview" class="mb-4" style="display: none;">
+                        <h5 class="text-center">Detected Colors</h5>
+                        <div class="cube-grid mx-auto" id="detected-colors">
+                            <div class="cube-face"></div>
+                            <div class="cube-face"></div>
+                            <div class="cube-face"></div>
+                            <div class="cube-face"></div>
+                            <div class="cube-face"></div>
+                            <div class="cube-face"></div>
+                            <div class="cube-face"></div>
+                            <div class="cube-face"></div>
+                            <div class="cube-face"></div>
+                        </div>
+                        <div class="text-center mt-2">
+                            <button id="accept-colors-btn" class="btn btn-success me-2">
+                                <i class="fas fa-check"></i> Accept
+                            </button>
+                            <button id="retry-capture-btn" class="btn btn-warning">
+                                <i class="fas fa-redo"></i> Retry
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Instructions -->
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-info-circle"></i> Instructions:</h6>
+                        <ol class="mb-0">
+                            <li>Click "Start Camera" to activate your webcam</li>
+                            <li>Hold your cube so one face is clearly visible to the camera</li>
+                            <li>Click "Capture Face" when the face is well-lit and centered</li>
+                            <li>Repeat for all 6 faces (the system will guide you)</li>
+                            <li>Click "Solve Cube" when all faces are captured</li>
+                        </ol>
+                        <hr>
+                        <small>
+                            <strong>Tips:</strong> Ensure good lighting, hold the cube steady, and make sure all 9 squares of each face are visible.
+                        </small>
+                    </div>
+                    
+                    <!-- Troubleshooting -->
+                    <div class="alert alert-warning">
+                        <h6><i class="fas fa-exclamation-triangle"></i> Troubleshooting:</h6>
+                        <ul class="mb-0">
+                            <li><strong>Camera not working?</strong> Check browser permissions and try refreshing the page</li>
+                            <li><strong>Poor detection?</strong> Ensure good lighting and hold the cube steady</li>
+                            <li><strong>Wrong colors?</strong> Make sure all 9 squares of each face are clearly visible</li>
+                            <li><strong>Still having issues?</strong> Try the manual input method instead</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Progress Indicator -->
+                    <div id="progress-container" class="text-center" style="display: none;">
+                        <div class="loading-spinner"></div>
+                        <p class="mt-2">Processing...</p>
+                    </div>
+                    
+                    <!-- Solution Display -->
+                    <div id="solution-container" class="solution-container" style="display: none;">
+                        <h4 class="text-center mb-3">
+                            <i class="fas fa-check-circle text-success"></i> Solution Found!
+                        </h4>
+                        <div class="alert alert-success">
+                            <strong>Move Count:</strong> <span id="move-count">0</span> moves
+                        </div>
+                        <div class="move-sequence" id="solution-moves">
+                            <!-- Solution moves will be displayed here -->
+                        </div>
+                        <div class="text-center mt-3">
+                            <small class="text-muted">
+                                Move notation: U=Up, D=Down, L=Left, R=Right, F=Front, B=Back<br>
+                                ' = Counterclockwise, 2 = Double turn
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <!-- Error Display -->
+                    <div id="error-container" style="display: none;">
+                        <div class="alert alert-danger">
+                            <strong>Error:</strong> <span id="error-message"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let video = document.getElementById('video-feed');
+    let canvas = document.getElementById('video-canvas');
+    let ctx = canvas.getContext('2d');
+    let currentFace = 'front';
+    let facesScanned = 0;
+    let capturedFaces = {};
+    let isCapturing = false;
+    
+    const faceOrder = ['front', 'back', 'left', 'right', 'up', 'down'];
+    const colorClasses = {
+        'R': 'color-red',
+        'G': 'color-green', 
+        'B': 'color-blue',
+        'Y': 'color-yellow',
+        'O': 'color-orange',
+        'W': 'color-white'
+    };
+    
+    // Start camera
+    document.getElementById('start-camera-btn').addEventListener('click', async function() {
+        showProgress();
+        
+        try {
+            // First test camera status
+            const testResponse = await fetch('/test_camera');
+            const testData = await testResponse.json();
+            
+            if (testData.status === 'working') {
+                showInfo('Camera is already working!');
+                hideProgress();
+                return;
+            }
+            
+            // Start camera
+            const response = await fetch('/start_camera');
+            const data = await response.json();
+            
+            if (data.success) {
+                showInfo(data.message || 'Camera started successfully!');
+                
+                // Show video and hide placeholder
+                document.getElementById('camera-placeholder').style.display = 'none';
+                video.style.display = 'block';
+                document.getElementById('face-indicator').style.display = 'block';
+                
+                // Update buttons
+                document.getElementById('start-camera-btn').style.display = 'none';
+                document.getElementById('capture-face-btn').style.display = 'inline-block';
+                document.getElementById('stop-camera-btn').style.display = 'inline-block';
+                
+                updateCurrentFace();
+            } else {
+                showError(data.error || 'Failed to start camera');
+            }
+        } catch (error) {
+            showError('Camera access denied or not available: ' + error.message);
+        } finally {
+            hideProgress();
+        }
+    });
+    
+    // Capture face
+    document.getElementById('capture-face-btn').addEventListener('click', async function() {
+        if (isCapturing) return;
+        
+        isCapturing = true;
+        showProgress();
+        
+        try {
+            // Test camera before capture
+            const testResponse = await fetch('/test_camera');
+            const testData = await testResponse.json();
+            
+            if (testData.status !== 'working') {
+                showError('Camera not working. Please restart the camera.');
+                return;
+            }
+            
+            // Draw current video frame to canvas
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Send frame to backend for color detection
+            const response = await fetch('/capture_face', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ face: currentFace })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                showColorPreview(data.colors);
+            } else {
+                showError(data.error || 'Failed to capture face');
+            }
+        } catch (error) {
+            showError('Capture failed: ' + error.message);
+        } finally {
+            hideProgress();
+            isCapturing = false;
+        }
+    });
+    
+    // Accept captured colors
+    document.getElementById('accept-colors-btn').addEventListener('click', function() {
+        const colors = Array.from(document.querySelectorAll('#detected-colors .cube-face')).map(face => {
+            for (let [colorCode, className] of Object.entries(colorClasses)) {
+                if (face.classList.contains(className)) {
+                    return colorCode;
+                }
+            }
+            return 'W';
+        });
+        
+        capturedFaces[currentFace] = colors;
+        facesScanned++;
+        
+        // Update UI
+        updateFaceProgress();
+        hideColorPreview();
+        
+        if (facesScanned < 6) {
+            // Move to next face
+            moveToNextFace();
+        } else {
+            // All faces captured
+            document.getElementById('solve-vision-btn').style.display = 'inline-block';
+            document.getElementById('capture-face-btn').style.display = 'none';
+            showInfo('All faces captured! Click "Solve Cube" to get the solution.');
+        }
+    });
+    
+    // Retry capture
+    document.getElementById('retry-capture-btn').addEventListener('click', function() {
+        hideColorPreview();
+    });
+    
+    // Stop camera
+    document.getElementById('stop-camera-btn').addEventListener('click', async function() {
+        try {
+            // Stop video stream
+            if (video.srcObject) {
+                video.srcObject.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+            }
+            
+            // Reset UI
+            video.style.display = 'none';
+            document.getElementById('camera-placeholder').style.display = 'flex';
+            document.getElementById('face-indicator').style.display = 'none';
+            
+            document.getElementById('start-camera-btn').style.display = 'inline-block';
+            document.getElementById('capture-face-btn').style.display = 'none';
+            document.getElementById('stop-camera-btn').style.display = 'none';
+            document.getElementById('solve-vision-btn').style.display = 'none';
+            
+            // Notify backend
+            await fetch('/stop_camera');
+            
+            // Reset scanning state
+            resetScanningState();
+            
+        } catch (error) {
+            console.error('Error stopping camera:', error);
+        }
+    });
+    
+    // Solve cube
+    document.getElementById('solve-vision-btn').addEventListener('click', async function() {
+        try {
+            showProgress();
+            hideResults();
+            
+            const response = await fetch('/solve_vision', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                showSolution(data.solution, data.move_count);
+            } else {
+                showError(data.error);
+            }
+        } catch (error) {
+            showError('Solve failed: ' + error.message);
+        } finally {
+            hideProgress();
+        }
+    });
+    
+    // Face button handlers
+    document.querySelectorAll('.face-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (facesScanned >= 6) return; // All faces captured
+            
+            currentFace = this.getAttribute('data-face');
+            updateCurrentFace();
+        });
+    });
+    
+    function updateCurrentFace() {
+        document.getElementById('current-face').textContent = currentFace.charAt(0).toUpperCase() + currentFace.slice(1);
+        
+        // Update face buttons
+        document.querySelectorAll('.face-btn').forEach(btn => {
+            btn.classList.remove('btn-primary');
+            btn.classList.add('btn-outline-primary');
+        });
+        
+        document.querySelector(`.face-btn[data-face="${currentFace}"]`).classList.remove('btn-outline-primary');
+        document.querySelector(`.face-btn[data-face="${currentFace}"]`).classList.add('btn-primary');
+    }
+    
+    function moveToNextFace() {
+        let currentIndex = faceOrder.indexOf(currentFace);
+        
+        // Find next unscanned face
+        for (let i = 1; i < faceOrder.length; i++) {
+            let nextIndex = (currentIndex + i) % faceOrder.length;
+            let nextFace = faceOrder[nextIndex];
+            
+            if (!capturedFaces[nextFace]) {
+                currentFace = nextFace;
+                updateCurrentFace();
+                break;
+            }
+        }
+    }
+    
+    function updateFaceProgress() {
+        const progressPercent = (facesScanned / 6) * 100;
+        document.getElementById('scan-progress').style.width = progressPercent + '%';
+        document.getElementById('faces-scanned').textContent = facesScanned;
+        
+        // Mark face as completed
+        const faceBtn = document.querySelector(`.face-btn[data-face="${currentFace}"]`);
+        faceBtn.innerHTML = '<i class="fas fa-check-circle"></i> ' + currentFace.charAt(0).toUpperCase() + currentFace.slice(1);
+        faceBtn.classList.remove('btn-primary', 'btn-outline-primary');
+        faceBtn.classList.add('btn-success');
+    }
+    
+    function showColorPreview(colors) {
+        const colorSquares = document.querySelectorAll('#detected-colors .cube-face');
+        
+        colors.forEach((color, index) => {
+            const square = colorSquares[index];
+            // Remove all color classes
+            Object.values(colorClasses).forEach(className => {
+                square.classList.remove(className);
+            });
+            // Add new color class
+            square.classList.add(colorClasses[color]);
+        });
+        
+        document.getElementById('color-preview').style.display = 'block';
+    }
+    
+    function hideColorPreview() {
+        document.getElementById('color-preview').style.display = 'none';
+    }
+    
+    function resetScanningState() {
+        currentFace = 'front';
+        facesScanned = 0;
+        capturedFaces = {};
+        
+        // Reset progress
+        document.getElementById('scan-progress').style.width = '0%';
+        document.getElementById('faces-scanned').textContent = '0';
+        
+        // Reset face buttons
+        document.querySelectorAll('.face-btn').forEach(btn => {
+            const face = btn.getAttribute('data-face');
+            btn.innerHTML = '<i class="fas fa-square"></i> ' + face.charAt(0).toUpperCase() + face.slice(1);
+            btn.classList.remove('btn-primary', 'btn-success');
+            btn.classList.add('btn-outline-primary');
+        });
+        
+        updateCurrentFace();
+        hideColorPreview();
+        hideResults();
+    }
+    
+    function showProgress() {
+        document.getElementById('progress-container').style.display = 'block';
+    }
+    
+    function hideProgress() {
+        document.getElementById('progress-container').style.display = 'none';
+    }
+    
+    function showSolution(moves, moveCount) {
+        document.getElementById('move-count').textContent = moveCount;
+        document.getElementById('solution-moves').textContent = moves.join(' ');
+        document.getElementById('solution-container').style.display = 'block';
+    }
+    
+    function showError(message) {
+        document.getElementById('error-message').textContent = message;
+        document.getElementById('error-container').style.display = 'block';
+    }
+    
+    function showInfo(message) {
+        // Create temporary info alert
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-info mt-3';
+        alertDiv.innerHTML = `<strong>Info:</strong> ${message}`;
+        document.querySelector('.card-body').appendChild(alertDiv);
+        
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 5000);
+    }
+    
+    function hideResults() {
+        document.getElementById('solution-container').style.display = 'none';
+        document.getElementById('error-container').style.display = 'none';
+    }
+    
+    // Initialize
+    updateCurrentFace();
+});
+</script>
+{% endblock %}

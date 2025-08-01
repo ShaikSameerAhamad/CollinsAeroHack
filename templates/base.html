@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Rubik's Cube Solver{% endblock %}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .navbar-brand {
+            color: white !important;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-nav .nav-link:hover {
+            color: white !important;
+            transform: translateY(-2px);
+        }
+        
+        .container-fluid {
+            padding-top: 2rem;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.4);
+        }
+        
+        .cube-face {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #333;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 5px;
+        }
+        
+        .cube-face:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cube-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
+            max-width: 180px;
+            margin: 0 auto;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 2px solid #333;
+        }
+        
+        .color-red { background-color: #ff0000; }
+        .color-green { background-color: #00ff00; }
+        .color-blue { background-color: #0000ff; }
+        .color-yellow { background-color: #ffff00; }
+        .color-orange { background-color: #ff8000; }
+        .color-white { background-color: #ffffff; }
+        
+        .solution-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .move-sequence {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            color: #333;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            word-wrap: break-word;
+        }
+        
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+        
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .face-indicator {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+            color: white;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .alert-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .hero-section {
+            text-align: center;
+            color: white;
+            padding: 50px 0;
+        }
+        
+        .hero-title {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .color-palette {
+            margin: 15px 0;
+        }
+        
+        .color-option {
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .color-option:hover {
+            transform: scale(1.15);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .color-option::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.2s ease;
+        }
+        
+        .color-option:active::after {
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .face-buttons .btn {
+            margin: 3px;
+            min-width: 80px;
+        }
+        
+        .progress {
+            height: 10px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        
+        .btn-outline-primary {
+            border-color: rgba(102, 126, 234, 0.5);
+            color: #667eea;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(240, 147, 251, 0.4);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+            border: none;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 65, 108, 0.4);
+            color: white;
+        }
+        
+        .btn-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+        }
+        
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .cube-face {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .cube-grid {
+                max-width: 150px;
+            }
+            
+            .color-option {
+                width: 40px;
+                height: 40px;
+                margin: 3px;
+            }
+            
+            .container-fluid {
+                padding-top: 1rem;
+            }
+            
+            .card {
+                margin: 10px;
+                border-radius: 15px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero-title {
+                font-size: 1.5rem;
+            }
+            
+            .cube-face {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .cube-grid {
+                max-width: 130px;
+                gap: 2px;
+            }
+            
+            .color-option {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .face-buttons .btn {
+                min-width: 60px;
+                font-size: 0.85rem;
+                padding: 8px 12px;
+            }
+        }
+        
+        /* Accessibility */
+        .cube-face:focus {
+            outline: 3px solid #007bff;
+            outline-offset: 2px;
+        }
+        
+        .color-option:focus {
+            outline: 3px solid #007bff;
+            outline-offset: 2px;
+        }
+        
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .bounce-in {
+            animation: bounceIn 0.6s ease-out;
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .solving-pulse {
+            animation: solvingPulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes solvingPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            .card {
+                background: rgba(255, 255, 255, 0.1);
+                color: white;
+            }
+            
+            .move-sequence {
+                background: rgba(255, 255, 255, 0.15);
+                color: white;
+            }
+        }
+        
+        /* Print styles */
+        @media print {
+            .navbar, .btn, .video-container {
+                display: none !important;
+            }
+            
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            
+            .card {
+                background: white !important;
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-cube me-2"></i> Rubik's Cube Solver
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home me-1"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/manual_input">
+                            <i class="fas fa-keyboard me-1"></i> Manual Input
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/vision_input">
+                            <i class="fas fa-camera me-1"></i> Vision Input
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="container">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                            <strong>{{ category.title() }}:</strong> {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="mt-5 py-4 text-center text-white">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <p class="mb-2">
+                        <i class="fas fa-cube me-2"></i>
+                        <strong>Advanced Rubik's Cube Solver</strong>
+                    </p>
+                    <p class="mb-0 opacity-75">
+                        Built with ❤️ using custom algorithms • Solves any cube in ≤25 moves
+                    </p>
+                    <div class="mt-3">
+                        <small class="opacity-50">
+                            Flask • OpenCV • Bootstrap • Custom Algorithm
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Global JavaScript for enhanced user experience -->
+    <script>
+        // Global utilities
+        window.CubeSolver = {
+            showLoading: function(element) {
+                if (element) {
+                    element.innerHTML = '<span class="loading-spinner me-2"></span>Processing...';
+                    element.disabled = true;
+                }
+            },
+            
+            hideLoading: function(element, originalText) {
+                if (element) {
+                    element.innerHTML = originalText;
+                    element.disabled = false;
+                }
+            },
+            
+            showAlert: function(message, type = 'info') {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+                alertDiv.innerHTML = `
+                    <strong>${type.charAt(0).toUpperCase() + type.slice(1)}:</strong> ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                
+                const container = document.querySelector('.container-fluid');
+                if (container) {
+                    container.insertBefore(alertDiv, container.firstChild);
+                    
+                    // Auto-dismiss after 5 seconds
+                    setTimeout(() => {
+                        alertDiv.remove();
+                    }, 5000);
+                }
+            },
+            
+            animateElement: function(element, animationClass = 'bounce-in') {
+                if (element) {
+                    element.classList.add(animationClass);
+                    setTimeout(() => {
+                        element.classList.remove(animationClass);
+                    }, 600);
+                }
+            }
+        };
+        
+        // Enhanced user experience features
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+            
+            // Add loading states to all buttons
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (!this.disabled && this.type === 'submit') {
+                        this.classList.add('solving-pulse');
+                    }
+                });
+            });
+            
+            // Add fade-in animation to cards
+            document.querySelectorAll('.card').forEach(card => {
+                card.classList.add('fade-in');
+            });
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Global shortcuts
+                if (e.altKey) {
+                    switch(e.key) {
+                        case '1':
+                            e.preventDefault();
+                            window.location.href = '/';
+                            break;
+                        case '2':
+                            e.preventDefault();
+                            window.location.href = '/manual_input';
+                            break;
+                        case '3':
+                            e.preventDefault();
+                            window.location.href = '/vision_input';
+                            break;
+                    }
+                }
+            });
+            
+            // Add tooltips to elements with title attributes
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+            
+            console.log('🎯 Rubik\'s Cube Solver loaded successfully!');
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>
