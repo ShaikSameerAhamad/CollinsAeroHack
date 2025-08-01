@@ -12,3 +12,4 @@ MarkupSafe
 joblib
 scipy
 threadpoolctl
+kociemba
