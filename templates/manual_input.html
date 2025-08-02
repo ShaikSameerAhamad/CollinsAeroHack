@@ -3,22 +3,7 @@
 {% block title %}Manual Input - Rubik's Cube Solver{% endblock %}
 
 {% block content %}
-<script>
-    // Wait for both DOM and React app to be ready
-    function initManualInputWhenReady() {
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeManualInput);
-        } else {
-            initializeManualInput();
-        }
-    }
-
-    // Listen for the React app mount event
-    window.addEventListener('reactAppMounted', initManualInputWhenReady);
-
-    // Fallback: If the event hasn't fired after 2 seconds, try to initialize anyway
-    setTimeout(initManualInputWhenReady, 2000);
-</script>
+<!-- Move initialization to the scripts block -->
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-12">
@@ -50,12 +35,15 @@
                         </div>
                     </div>
                     
-                    <!-- 3D Cube Visualization (React) -->
+                    <!-- 3D Cube Preview -->
                     <div class="row mb-4">
                         <div class="col-12 text-center">
                             <h5>3D Cube Preview</h5>
-                            <div class="cube-3d-container">
-                                <div id="react-cube-root"></div>
+                            <div class="cube-3d-container" style="width: 100%; height: 400px; background: #1a1a1a; border-radius: 10px; margin: 20px 0;">
+                                <div id="preview-cube-container" style="width: 100%; height: 100%;"></div>
+                            </div>
+                            <div class="zoom-indicator" style="position: absolute; top: 1rem; right: 1rem; background: rgba(0,0,0,0.7); color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; font-family: monospace;">
+                                Zoom: 100%
                             </div>
                         </div>
                     </div>
@@ -202,7 +190,10 @@
                             <button id="reset-btn" class="btn btn-warning me-2">
                                 <i class="fas fa-undo"></i> Reset Cube
                             </button>
-                            <button id="solve-btn" class="btn btn-primary btn-lg">
+                            <button id="apply-input-btn" class="btn btn-info me-2">
+                                <i class="fas fa-sync"></i> Apply Input
+                            </button>
+                            <button id="solve-button" class="btn btn-primary mb-3 solve-button">
                                 <i class="fas fa-magic"></i> Solve Cube
                             </button>
                         </div>
@@ -295,12 +286,21 @@
 {% endblock %}
 
 {% block extra_scripts %}
-<!-- Load the React 3D Cube bundle (adjust path as needed) -->
-<script src="/static/js/main.js"></script>
+<!-- Load the 3D Cube modules -->
+<script type="module" src="{{ url_for('static', filename='js/cube3d.js') }}"></script>
 {% endblock %}
 
 {% block scripts %}
 <script>
+// Wait for both DOM and cube3D module to be ready
+function waitForCube3D(callback) {
+    if (window.cube3D) {
+        callback();
+    } else {
+        setTimeout(() => waitForCube3D(callback), 100);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     let selectedColor = 'W'; // Default to white
     let cubeState = {
@@ -352,22 +352,30 @@ document.addEventListener('DOMContentLoaded', function() {
         Object.keys(defaultColors).forEach(face => {
             for (let i = 0; i < 9; i++) {
                 const element = document.querySelector(`[data-face="${face}"][data-pos="${i}"]`);
-                const color = defaultColors[face][i];
-                updateSquareColor(element, color);
-                cubeState[face][i] = color;
+                if (element) {
+                    const color = defaultColors[face][i];
+                    updateSquareColor(element, color);
+                    cubeState[face][i] = color;
+                }
             }
         });
         
-
-    }
-    
-    // Parse color string and update face
+        // Initialize the 3D preview
+        waitForCube3D(() => {
+            window.cube3D.initPreview();
+            window.cube3D.updatePreview(cubeState);
+        });
+    }    // Parse color string and update face
     function parseColorString(face, colorString) {
         if (colorString.length !== 9) {
             return false;
         }
         
-        const colors = colorString.toUpperCase().split('');
+        const colors = colorString.split('').map(c => {
+            // Convert to uppercase and map to standard color code
+            const upperC = c.toUpperCase();
+            return colorStringMap[upperC] || upperC;
+        });
         const validColors = ['R', 'G', 'B', 'Y', 'O', 'W'];
         
         for (let i = 0; i < 9; i++) {
@@ -380,8 +388,6 @@ document.addEventListener('DOMContentLoaded', function() {
             updateSquareColor(element, color);
             cubeState[face][i] = color;
         }
-        
-
         
         return true;
     }
@@ -546,6 +552,86 @@ document.addEventListener('DOMContentLoaded', function() {
             input.dataset.hasInteracted = 'false';
         });
     });
+
+    // Apply Input button
+    document.getElementById('apply-input-btn').addEventListener('click', function() {
+        let isValid = true;
+        const faces = ['up', 'down', 'front', 'back', 'left', 'right'];
+        const validColors = ['R', 'G', 'B', 'Y', 'O', 'W'];
+        const colorCounts = {
+            'R': 0, 'G': 0, 'B': 0, 'Y': 0, 'O': 0, 'W': 0
+        };
+
+        // First validate all inputs
+        faces.forEach(face => {
+            const input = document.getElementById(`${face}-input`);
+            if (!input || !input.value) {
+                showError(`Missing input for ${face} face`);
+                isValid = false;
+                return;
+            }
+
+            const colorString = input.value;
+            if (colorString.length !== 9) {
+                showError(`Invalid input length for ${face} face`);
+                isValid = false;
+                return;
+            }
+
+            // Check if all characters are valid colors and convert them
+            const colors = colorString.split('').map(c => {
+                const upperC = c.toUpperCase();
+                return colorStringMap[upperC] || upperC;
+            });
+            
+            for (const color of colors) {
+                if (!validColors.includes(color)) {
+                    showError(`Invalid color "${color}" in ${face} face`);
+                    isValid = false;
+                    return;
+                }
+                colorCounts[color]++;
+            }
+        });
+
+        // Check if we have exactly 9 of each color
+        for (const [color, count] of Object.entries(colorCounts)) {
+            if (count !== 9) {
+                showError(`Invalid configuration: Found ${count} ${color}'s (should be 9)`);
+                isValid = false;
+                return;
+            }
+        }
+
+        // If all validations pass, apply the colors
+        if (isValid) {
+            faces.forEach(face => {
+                const input = document.getElementById(`${face}-input`);
+                const colorString = input.value.toUpperCase();
+                if (parseColorString(face, colorString)) {
+                    input.classList.remove('is-invalid');
+                    input.classList.add('is-valid');
+                }
+            });
+
+            // Update the preview cube
+            window.cube3D.updatePreview(cubeState);
+
+            // Show success message
+            const successAlert = document.createElement('div');
+            successAlert.className = 'alert alert-success alert-dismissible fade show mt-3';
+            successAlert.innerHTML = `
+                <strong>Success!</strong> Colors applied to cube faces.
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.querySelector('.cube-container').insertAdjacentElement('beforebegin', successAlert);
+
+            // Auto-dismiss the alert after 3 seconds
+            setTimeout(() => {
+                successAlert.remove();
+            }, 3000);
+        }
+    });
     
     // Solve button
     const solveBtn = document.getElementById('solve-btn');
@@ -607,8 +693,11 @@ document.addEventListener('DOMContentLoaded', function() {
         solutionSteps = convertMovesToSteps(moves);
         currentStep = 0;
         
-        // Create solution 3D cube
-        createSolution3DCube();
+        // Initialize or reinitialize the solution cube
+        window.cube3D.initSolution();
+        
+        // Update solution cube with current state
+        window.cube3D.updatePreview(cubeState);
         
         // Display move sequence
         displayMoveSequence(moves);
