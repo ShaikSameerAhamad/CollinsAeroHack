@@ -3,7 +3,6 @@
 {% block title %}Manual Input - Rubik's Cube Solver{% endblock %}
 
 {% block content %}
-<!-- Move initialization to the scripts block -->
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-12">
@@ -35,19 +34,6 @@
                         </div>
                     </div>
                     
-                    <!-- 3D Cube Preview -->
-                    <div class="row mb-4">
-                        <div class="col-12 text-center">
-                            <h5>3D Cube Preview</h5>
-                            <div class="cube-3d-container" style="width: 100%; height: 400px; background: #1a1a1a; border-radius: 10px; margin: 20px 0;">
-                                <div id="preview-cube-container" style="width: 100%; height: 100%;"></div>
-                            </div>
-                            <div class="zoom-indicator" style="position: absolute; top: 1rem; right: 1rem; background: rgba(0,0,0,0.7); color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; font-family: monospace;">
-                                Zoom: 100%
-                            </div>
-                        </div>
-                    </div>
-                    
                     <!-- Cube Faces -->
                     <div class="cube-container">
                         <!-- Top Face (Up) -->
@@ -55,15 +41,9 @@
                             <div class="col-auto">
                                 <h6 class="text-center">Up Face</h6>
                                 <div class="cube-grid" id="up-face">
-                                    <div class="cube-face" data-face="up" data-pos="0"></div>
-                                    <div class="cube-face" data-face="up" data-pos="1"></div>
-                                    <div class="cube-face" data-face="up" data-pos="2"></div>
-                                    <div class="cube-face" data-face="up" data-pos="3"></div>
-                                    <div class="cube-face" data-face="up" data-pos="4"></div>
-                                    <div class="cube-face" data-face="up" data-pos="5"></div>
-                                    <div class="cube-face" data-face="up" data-pos="6"></div>
-                                    <div class="cube-face" data-face="up" data-pos="7"></div>
-                                    <div class="cube-face" data-face="up" data-pos="8"></div>
+                                    {% for i in range(9) %}
+                                    <div class="cube-face" data-face="up" data-pos="{{ i }}"></div>
+                                    {% endfor %}
                                 </div>
                                 <div class="mt-2">
                                     <input type="text" class="form-control form-control-sm color-string-input" 
@@ -79,15 +59,9 @@
                             <div class="col-auto">
                                 <h6 class="text-center">Left Face</h6>
                                 <div class="cube-grid" id="left-face">
-                                    <div class="cube-face" data-face="left" data-pos="0"></div>
-                                    <div class="cube-face" data-face="left" data-pos="1"></div>
-                                    <div class="cube-face" data-face="left" data-pos="2"></div>
-                                    <div class="cube-face" data-face="left" data-pos="3"></div>
-                                    <div class="cube-face" data-face="left" data-pos="4"></div>
-                                    <div class="cube-face" data-face="left" data-pos="5"></div>
-                                    <div class="cube-face" data-face="left" data-pos="6"></div>
-                                    <div class="cube-face" data-face="left" data-pos="7"></div>
-                                    <div class="cube-face" data-face="left" data-pos="8"></div>
+                                    {% for i in range(9) %}
+                                    <div class="cube-face" data-face="left" data-pos="{{ i }}"></div>
+                                    {% endfor %}
                                 </div>
                                 <div class="mt-2">
                                     <input type="text" class="form-control form-control-sm color-string-input" 
@@ -100,15 +74,9 @@
                             <div class="col-auto">
                                 <h6 class="text-center">Front Face</h6>
                                 <div class="cube-grid" id="front-face">
-                                    <div class="cube-face" data-face="front" data-pos="0"></div>
-                                    <div class="cube-face" data-face="front" data-pos="1"></div>
-                                    <div class="cube-face" data-face="front" data-pos="2"></div>
-                                    <div class="cube-face" data-face="front" data-pos="3"></div>
-                                    <div class="cube-face" data-face="front" data-pos="4"></div>
-                                    <div class="cube-face" data-face="front" data-pos="5"></div>
-                                    <div class="cube-face" data-face="front" data-pos="6"></div>
-                                    <div class="cube-face" data-face="front" data-pos="7"></div>
-                                    <div class="cube-face" data-face="front" data-pos="8"></div>
+                                    {% for i in range(9) %}
+                                    <div class="cube-face" data-face="front" data-pos="{{ i }}"></div>
+                                    {% endfor %}
                                 </div>
                                 <div class="mt-2">
                                     <input type="text" class="form-control form-control-sm color-string-input" 
@@ -121,15 +89,9 @@
                             <div class="col-auto">
                                 <h6 class="text-center">Right Face</h6>
                                 <div class="cube-grid" id="right-face">
-                                    <div class="cube-face" data-face="right" data-pos="0"></div>
-                                    <div class="cube-face" data-face="right" data-pos="1"></div>
-                                    <div class="cube-face" data-face="right" data-pos="2"></div>
-                                    <div class="cube-face" data-face="right" data-pos="3"></div>
-                                    <div class="cube-face" data-face="right" data-pos="4"></div>
-                                    <div class="cube-face" data-face="right" data-pos="5"></div>
-                                    <div class="cube-face" data-face="right" data-pos="6"></div>
-                                    <div class="cube-face" data-face="right" data-pos="7"></div>
-                                    <div class="cube-face" data-face="right" data-pos="8"></div>
+                                    {% for i in range(9) %}
+                                    <div class="cube-face" data-face="right" data-pos="{{ i }}"></div>
+                                    {% endfor %}
                                 </div>
                                 <div class="mt-2">
                                     <input type="text" class="form-control form-control-sm color-string-input" 
@@ -142,15 +104,9 @@
                             <div class="col-auto">
                                 <h6 class="text-center">Back Face</h6>
                                 <div class="cube-grid" id="back-face">
-                                    <div class="cube-face" data-face="back" data-pos="0"></div>
-                                    <div class="cube-face" data-face="back" data-pos="1"></div>
-                                    <div class="cube-face" data-face="back" data-pos="2"></div>
-                                    <div class="cube-face" data-face="back" data-pos="3"></div>
-                                    <div class="cube-face" data-face="back" data-pos="4"></div>
-                                    <div class="cube-face" data-face="back" data-pos="5"></div>
-                                    <div class="cube-face" data-face="back" data-pos="6"></div>
-                                    <div class="cube-face" data-face="back" data-pos="7"></div>
-                                    <div class="cube-face" data-face="back" data-pos="8"></div>
+                                    {% for i in range(9) %}
+                                    <div class="cube-face" data-face="back" data-pos="{{ i }}"></div>
+                                    {% endfor %}
                                 </div>
                                 <div class="mt-2">
                                     <input type="text" class="form-control form-control-sm color-string-input" 
@@ -165,15 +121,9 @@
                             <div class="col-auto">
                                 <h6 class="text-center">Down Face</h6>
                                 <div class="cube-grid" id="down-face">
-                                    <div class="cube-face" data-face="down" data-pos="0"></div>
-                                    <div class="cube-face" data-face="down" data-pos="1"></div>
-                                    <div class="cube-face" data-face="down" data-pos="2"></div>
-                                    <div class="cube-face" data-face="down" data-pos="3"></div>
-                                    <div class="cube-face" data-face="down" data-pos="4"></div>
-                                    <div class="cube-face" data-face="down" data-pos="5"></div>
-                                    <div class="cube-face" data-face="down" data-pos="6"></div>
-                                    <div class="cube-face" data-face="down" data-pos="7"></div>
-                                    <div class="cube-face" data-face="down" data-pos="8"></div>
+                                    {% for i in range(9) %}
+                                    <div class="cube-face" data-face="down" data-pos="{{ i }}"></div>
+                                    {% endfor %}
                                 </div>
                                 <div class="mt-2">
                                     <input type="text" class="form-control form-control-sm color-string-input" 
@@ -208,62 +158,48 @@
                     </div>
                     
                     <!-- Solution Display -->
-                    <div id="solution-container" class="solution-container" style="display: none;">
+                    <div id="solution-container" class="solution-container" style="display: none; margin-top: 30px;">
                         <h4 class="text-center mb-3">
                             <i class="fas fa-check-circle text-success"></i> Solution Found!
                         </h4>
                         <div class="alert alert-success">
                             <strong>Move Count:</strong> <span id="move-count">0</span> moves
                         </div>
-                        
                         <!-- 3D Cube with Playback Controls -->
                         <div class="solution-3d-section mb-4">
-                            <div class="cube-3d-container-solution">
-                                <div class="cube-3d-solution" id="cube-3d-solution">
-                                    <!-- 3D cube for solution playback -->
-                                </div>
+                            <h5 class="text-center">Solution Visualization</h5>
+                            <div class="cube-3d-container" style="height: 300px; margin-bottom: 20px;">
+                                <div id="solution-cube-container" style="width: 100%; height: 100%;"></div>
                             </div>
-                            
                             <!-- Playback Controls -->
-                            <div class="playback-controls">
-                                <div class="control-buttons">
+                            <div class="playback-controls text-center">
+                                <div class="control-buttons mb-2">
                                     <button id="rewind-start" class="btn btn-outline-secondary btn-sm">
                                         <i class="fas fa-fast-backward"></i>
                                     </button>
-                                    <button id="play-pause" class="btn btn-outline-primary btn-sm">
+                                    <button id="play-pause" class="btn btn-outline-primary btn-sm mx-1">
                                         <i class="fas fa-play"></i>
                                     </button>
                                     <button id="step-forward" class="btn btn-outline-secondary btn-sm">
                                         <i class="fas fa-step-forward"></i>
                                     </button>
-                                    <button id="skip-end" class="btn btn-outline-secondary btn-sm">
+                                    <button id="skip-end" class="btn btn-outline-secondary btn-sm ms-1">
                                         <i class="fas fa-fast-forward"></i>
                                     </button>
                                 </div>
-                                
                                 <div class="progress-section">
                                     <input type="range" id="solution-progress" class="form-range" min="0" max="100" value="0">
                                     <span id="speed-indicator" class="badge bg-info">3 s/rot</span>
                                 </div>
                             </div>
                         </div>
-                        
                         <!-- Move List -->
                         <div class="move-list-section mb-4">
                             <h5>Move Sequence:</h5>
-                            <div class="move-sequence-display" id="move-sequence-display">
+                            <div class="move-sequence-display alert alert-light" id="move-sequence-display">
                                 <!-- Move sequence will be displayed here -->
                             </div>
                         </div>
-                        
-                        <!-- Step Grid -->
-                        <div class="step-grid-section">
-                            <h5>Step-by-Step Solution:</h5>
-                            <div class="step-grid" id="step-grid">
-                                <!-- Step grid will be generated here -->
-                            </div>
-                        </div>
-                        
                         <div class="text-center mt-3">
                             <small class="text-muted">
                                 Move notation: U=Up, D=Down, L=Left, R=Right, F=Front, B=Back<br>
@@ -287,29 +223,21 @@
 
 {% block extra_scripts %}
 <!-- Load the 3D Cube modules -->
+<script src="https://unpkg.com/three@0.154.0/build/three.module.js"></script>
 <script type="module" src="{{ url_for('static', filename='js/cube3d.js') }}"></script>
 {% endblock %}
 
 {% block scripts %}
 <script>
-// Wait for both DOM and cube3D module to be ready
-function waitForCube3D(callback) {
-    if (window.cube3D) {
-        callback();
-    } else {
-        setTimeout(() => waitForCube3D(callback), 100);
-    }
-}
-
 document.addEventListener('DOMContentLoaded', function() {
     let selectedColor = 'W'; // Default to white
     let cubeState = {
         up: Array(9).fill('W'),
-        down: Array(9).fill('W'),
-        front: Array(9).fill('W'),
-        back: Array(9).fill('W'),
-        left: Array(9).fill('W'),
-        right: Array(9).fill('W')
+        down: Array(9).fill('Y'),
+        front: Array(9).fill('R'),
+        back: Array(9).fill('O'),
+        left: Array(9).fill('G'),
+        right: Array(9).fill('B')
     };
     
     let solutionSteps = [];
@@ -336,6 +264,15 @@ document.addEventListener('DOMContentLoaded', function() {
         'o': 'O', 'O': 'O',
         'w': 'W', 'W': 'W'
     };
+    
+    // Wait for cube3D module to be ready
+    function waitForCube3D(callback) {
+        if (window.cube3D) {
+            callback();
+        } else {
+            setTimeout(() => waitForCube3D(callback), 100);
+        }
+    }
     
     // Initialize cube with default colors
     function initializeCube() {
@@ -365,7 +302,9 @@ document.addEventListener('DOMContentLoaded', function() {
             window.cube3D.initPreview();
             window.cube3D.updatePreview(cubeState);
         });
-    }    // Parse color string and update face
+    }
+
+    // Parse color string and update face
     function parseColorString(face, colorString) {
         if (colorString.length !== 9) {
             return false;
@@ -405,65 +344,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-
-    
-    // Create solution 3D cube
-    function createSolution3DCube() {
-        const container = document.getElementById('cube-3d-solution');
-        container.innerHTML = '';
-        
-        // Create 3D cube structure for solution
-        const cube = document.createElement('div');
-        cube.className = 'cube-3d-wrapper-solution';
-        
-        // Create faces in proper order
-        const faces = [
-            { name: 'front', class: 'front-face' },
-            { name: 'back', class: 'back-face' },
-            { name: 'right', class: 'right-face' },
-            { name: 'left', class: 'left-face' },
-            { name: 'up', class: 'up-face' },
-            { name: 'down', class: 'down-face' }
-        ];
-        
-        faces.forEach(face => {
-            const faceElement = document.createElement('div');
-            faceElement.className = `cube-face-3d-solution ${face.class}`;
-            
-            // Create 3x3 grid for each face
-            for (let i = 0; i < 9; i++) {
-                const square = document.createElement('div');
-                square.className = 'cube-square-3d-solution';
-                square.dataset.face = face.name;
-                square.dataset.pos = i;
-                faceElement.appendChild(square);
-            }
-            
-            cube.appendChild(faceElement);
-        });
-        
-        container.appendChild(cube);
-        
-        // Update colors after creation
-        updateSolution3DCube();
-    }
-    
-
-    
-    // Update solution 3D cube colors
-    function updateSolution3DCube() {
-        const faces = ['front', 'back', 'right', 'left', 'up', 'down'];
-        faces.forEach(face => {
-            for (let i = 0; i < 9; i++) {
-                const square = document.querySelector(`.cube-square-3d-solution[data-face="${face}"][data-pos="${i}"]`);
-                if (square) {
-                    const color = cubeState[face][i];
-                    updateSquareColor(square, color);
-                }
-            }
-        });
-    }
-    
     // Color palette click handlers
     document.querySelectorAll('.color-option').forEach(option => {
         option.addEventListener('click', function() {
@@ -497,7 +377,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 input.value = cubeState[face].join('');
             }
             
-
+            // Update 3D preview
+            waitForCube3D(() => {
+                window.cube3D.updatePreview(cubeState);
+            });
         });
     });
     
@@ -511,6 +394,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (parseColorString(face, colorString)) {
                     this.classList.remove('is-invalid');
                     this.classList.add('is-valid');
+                    
+                    // Update 3D preview
+                    waitForCube3D(() => {
+                        window.cube3D.updatePreview(cubeState);
+                    });
                 } else {
                     this.classList.remove('is-valid');
                     this.classList.add('is-invalid');
@@ -614,9 +502,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // Update the preview cube
-            window.cube3D.updatePreview(cubeState);
-
             // Show success message
             const successAlert = document.createElement('div');
             successAlert.className = 'alert alert-success alert-dismissible fade show mt-3';
@@ -634,8 +519,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Solve button
-    const solveBtn = document.getElementById('solve-btn');
-    if (solveBtn) solveBtn.addEventListener('click', function() {
+    document.getElementById('solve-button').addEventListener('click', function() {
         solveCube();
     });
     
@@ -693,17 +577,14 @@ document.addEventListener('DOMContentLoaded', function() {
         solutionSteps = convertMovesToSteps(moves);
         currentStep = 0;
         
-        // Initialize or reinitialize the solution cube
-        window.cube3D.initSolution();
-        
-        // Update solution cube with current state
-        window.cube3D.updatePreview(cubeState);
+        // Initialize solution cube
+        waitForCube3D(() => {
+            window.cube3D.initSolution();
+            window.cube3D.updateSolution(cubeState);
+        });
         
         // Display move sequence
         displayMoveSequence(moves);
-        
-        // Generate step grid
-        generateStepGrid(moves);
         
         // Setup playback controls
         setupPlaybackControls();
@@ -749,78 +630,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayMoveSequence(moves) {
         const container = document.getElementById('move-sequence-display');
         container.innerHTML = `<div class="move-sequence-text">${moves.join(' ')}</div>`;
-    }
-    
-    function generateStepGrid(moves) {
-        const container = document.getElementById('step-grid');
-        container.innerHTML = '';
-        
-        // Create start state
-        const startStep = createStepPanel('Start', '', 0, true);
-        container.appendChild(startStep);
-        
-        // Create step panels for each move
-        moves.forEach((move, index) => {
-            const stepPanel = createStepPanel(`${index + 1}: ${move}`, move, index + 1, false);
-            container.appendChild(stepPanel);
-        });
-    }
-    
-    function createStepPanel(title, move, stepNumber, isStart) {
-        const panel = document.createElement('div');
-        panel.className = 'step-panel';
-        panel.dataset.step = stepNumber;
-        
-        const titleElement = document.createElement('div');
-        titleElement.className = 'step-title';
-        titleElement.textContent = title;
-        panel.appendChild(titleElement);
-        
-        // Create mini cube representation
-        const miniCube = document.createElement('div');
-        miniCube.className = 'mini-cube';
-        
-        // Create 3 faces (top, front, right) like in the image
-        const faces = ['up', 'front', 'right'];
-        faces.forEach(face => {
-            const faceElement = document.createElement('div');
-            faceElement.className = `mini-face ${face}-mini`;
-            
-            // Create 3x3 grid for each face
-            for (let i = 0; i < 9; i++) {
-                const square = document.createElement('div');
-                square.className = 'mini-square';
-                square.dataset.face = face;
-                square.dataset.pos = i;
-                faceElement.appendChild(square);
-            }
-            
-            miniCube.appendChild(faceElement);
-        });
-        
-        panel.appendChild(miniCube);
-        
-        // Add move indicator if not start
-        if (!isStart) {
-            const indicator = createMoveIndicator(move);
-            panel.appendChild(indicator);
-        }
-        
-        return panel;
-    }
-    
-    function createMoveIndicator(move) {
-        const indicator = document.createElement('div');
-        indicator.className = 'move-indicator';
-        
-        if (move.endsWith('2')) {
-            indicator.innerHTML = '<span class="indicator-2x">2×</span>';
-        } else {
-            const arrow = move.endsWith("'") ? '↺' : '↻';
-            indicator.innerHTML = `<span class="indicator-arrow">${arrow}</span>`;
-        }
-        
-        return indicator;
     }
     
     function setupPlaybackControls() {
@@ -883,87 +692,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const progress = (step / solutionSteps.length) * 100;
         document.getElementById('solution-progress').value = progress;
         
-        // Highlight current step in grid
-        document.querySelectorAll('.step-panel').forEach(panel => {
-            panel.classList.remove('active');
-        });
-        
-        const currentPanel = document.querySelector(`.step-panel[data-step="${step}"]`);
-        if (currentPanel) {
-            currentPanel.classList.add('active');
-        }
-        
         // Animate 3D cube if not start
         if (step > 0) {
             const move = solutionSteps[step - 1].move;
-            animateSolution3DCubeMove(move);
+            waitForCube3D(() => {
+                window.cube3D.animateSolutionMove(move);
+            });
         }
     }
-    
-    function animateSolution3DCubeMove(move) {
-        const cube = document.querySelector('.cube-3d-wrapper-solution');
-        if (!cube) return;
-        
-        // Parse move
-        const face = move[0];
-        const direction = move.slice(1);
-        
-        // Calculate rotation
-        let rotation = 0;
-        if (direction === "'") {
-            rotation = -90;
-        } else if (direction === "2") {
-            rotation = 180;
-        } else {
-            rotation = 90;
-        }
-        
-        // Add rotating class for smooth animation
-        cube.classList.add('rotating');
-        
-        // Apply rotation animation based on face
-        const faceMap = {
-            'U': 'rotateX',
-            'D': 'rotateX',
-            'L': 'rotateY',
-            'R': 'rotateY',
-            'F': 'rotateZ',
-            'B': 'rotateZ'
-        };
-        
-        const axis = faceMap[face];
-        if (axis) {
-            // Get current transform
-            const currentTransform = cube.style.transform;
-            
-            // Create new transform with additional rotation
-            const newRotation = `${axis}(${rotation}deg)`;
-            const newTransform = currentTransform + ' ' + newRotation;
-            
-            // Apply the new transform
-            cube.style.transform = newTransform;
-            
-            // Reset after animation
-            setTimeout(() => {
-                cube.classList.remove('rotating');
-            }, 1000);
-        }
-    }
-    
-    // Navigation buttons
-    document.getElementById('prev-step').addEventListener('click', function() {
-        if (currentStep > 0) {
-            currentStep--;
-            showCurrentStep();
-        }
-    });
-    
-    document.getElementById('next-step').addEventListener('click', function() {
-        if (currentStep < solutionSteps.length - 1) {
-            currentStep++;
-            showCurrentStep();
-        }
-    });
     
     function showError(message) {
         document.getElementById('error-message').textContent = message;

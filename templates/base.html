@@ -464,6 +464,46 @@
             width: 100%;
             height: 100%;
         }
+        .cube-3d-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        #preview-cube-container, 
+        #solution-cube-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        .solution-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none; /* Hidden by default */
+        }
+
+        #solution-container {
+            display: none; /* Ensure it's hidden initially */
+        }
+
+        .error-display {
+            margin-top: 20px;
+        }
+
+        /* Ensure solution section doesn't overlap */
+        .card-body > * {
+            margin-bottom: 20px;
+        }
+
+        .card-body > *:last-child {
+            margin-bottom: 0;
+        }
     </style>
 </head>
 <body>

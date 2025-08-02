@@ -1,4 +1,3 @@
-// RubiksCube3D.js
 import * as THREE from 'https://unpkg.com/three@0.154.0/build/three.module.js';
 
 class RubiksCube3D {
@@ -13,6 +12,8 @@ class RubiksCube3D {
         this.rotation = { x: 0.3, y: 0.3 };
         this.zoom = 8;
         this.animationId = null;
+        this.animationQueue = [];
+        this.isAnimating = false;
 
         // Cube colors
         this.colors = {
@@ -31,19 +32,32 @@ class RubiksCube3D {
     updateState(cubeState) {
         // Update colors based on cube state
         this.colors = {
-            front: this.colorMap[cubeState.front[4]],  // Center piece color
-            back: this.colorMap[cubeState.back[4]],
-            right: this.colorMap[cubeState.right[4]],
-            left: this.colorMap[cubeState.left[4]],
-            top: this.colorMap[cubeState.up[4]],
-            bottom: this.colorMap[cubeState.down[4]]
+            front: this.getColor(cubeState.front[4]),  // Center piece color
+            back: this.getColor(cubeState.back[4]),
+            right: this.getColor(cubeState.right[4]),
+            left: this.getColor(cubeState.left[4]),
+            top: this.getColor(cubeState.up[4]),
+            bottom: this.getColor(cubeState.down[4])
         };
         
         // Recreate the cube with new colors
         if (this.cubeGroup) {
             this.scene.remove(this.cubeGroup);
+            this.cubeGroup = null;
         }
         this.createCube();
+    }
+
+    getColor(colorChar) {
+        const colorMap = {
+            'R': 0xff0000, // red
+            'G': 0x00ff00, // green
+            'B': 0x0000ff, // blue
+            'Y': 0xffff00, // yellow
+            'O': 0xff6600, // orange
+            'W': 0xffffff  // white
+        };
+        return colorMap[colorChar] || 0x000000;
     }
 
     createCubelet(x, y, z) {
@@ -74,12 +88,12 @@ class RubiksCube3D {
         this.scene.background = new THREE.Color(0x1a1a1a);
 
         // Camera
-        this.camera = new THREE.PerspectiveCamera(50, 1, 0.1, 1000);
+        this.camera = new THREE.PerspectiveCamera(50, this.mountElement.clientWidth / this.mountElement.clientHeight, 0.1, 1000);
         this.updateCameraPosition();
 
         // Renderer
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        this.renderer.setSize(600, 600);
+        this.renderer.setSize(this.mountElement.clientWidth, this.mountElement.clientHeight);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -96,6 +110,16 @@ class RubiksCube3D {
         this.scene.add(directionalLight);
 
         // Create cube
+        this.createCube();
+
+        // Mount
+        if (this.mountElement) {
+            this.mountElement.appendChild(this.renderer.domElement);
+            this.startAnimation();
+        }
+    }
+
+    createCube() {
         this.cubeGroup = new THREE.Group();
         
         for (let x = -1; x <= 1; x++) {
@@ -114,12 +138,6 @@ class RubiksCube3D {
         this.cubeGroup.rotation.y = this.rotation.y;
         
         this.scene.add(this.cubeGroup);
-
-        // Mount
-        if (this.mountElement) {
-            this.mountElement.appendChild(this.renderer.domElement);
-            this.startAnimation();
-        }
     }
 
     updateCameraPosition() {
@@ -135,7 +153,69 @@ class RubiksCube3D {
         };
         animate();
     }
-
+    
+    animateMove(move) {
+        // Get rotation axis and angle based on move
+        let axis, angle;
+        switch(move.charAt(0)) {
+            case 'U':
+                axis = new THREE.Vector3(0, 1, 0);
+                break;
+            case 'D':
+                axis = new THREE.Vector3(0, -1, 0);
+                break;
+            case 'L':
+                axis = new THREE.Vector3(-1, 0, 0);
+                break;
+            case 'R':
+                axis = new THREE.Vector3(1, 0, 0);
+                break;
+            case 'F':
+                axis = new THREE.Vector3(0, 0, 1);
+                break;
+            case 'B':
+                axis = new THREE.Vector3(0, 0, -1);
+                break;
+            default:
+                return;
+        }
+        
+        // Set rotation direction
+        angle = Math.PI / 2; // 90 degrees
+        if (move.includes("'")) {
+            angle = -angle;
+        } else if (move.includes("2")) {
+            angle *= 2;
+        }
+        
+        // Create animation
+        const duration = 1000; // 1 second
+        const startTime = Date.now();
+        
+        const originalRotation = {
+            x: this.cubeGroup.rotation.x,
+            y: this.cubeGroup.rotation.y,
+            z: this.cubeGroup.rotation.z
+        };
+        
+        const animateStep = () => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const currentAngle = angle * progress;
+            
+            // Reset to original rotation
+            this.cubeGroup.rotation.set(originalRotation.x, originalRotation.y, originalRotation.z);
+            
+            // Apply current rotation
+            this.cubeGroup.rotateOnAxis(axis, currentAngle);
+            
+            if (progress < 1) {
+                requestAnimationFrame(animateStep);
+            }
+        };
+        
+        animateStep();
+    }
     setupEventListeners() {
         if (!this.mountElement) return;
 
